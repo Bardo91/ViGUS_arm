@@ -66,7 +66,7 @@ private:	// Private interface
 template<typename type_>
 Matrix<type_> createEye(int _n);
 
-Matrix<double> createGivenRotation(int _n, int _i, int _j, double _theta);
+Matrix<float> createGivenRotation(int _n, int _i, int _j, float _theta);
 
 //-----------------------------------------------------------------------------
 // Inline implementation
@@ -360,7 +360,7 @@ bool Matrix<type_>::decompositionQR_GR(Matrix<type_>& _Q, Matrix<type_>& _R){
   // Creating Givens Rotation matrix
   for (int j = 0; j < mCols; j++){
     for (int i = mRows - 1; i > j; i--){
-      double theta = atan(-_R[i*dim + j] / _R[(i - 1)*dim + j]);
+      float theta = atan(-_R[i*dim + j] / _R[(i - 1)*dim + j]);
       Matrix<type_> Gi = createGivenRotation(dim, i, i - 1, theta);
 
       _R = Gi * _R;

@@ -9,8 +9,8 @@
 #include "Matrix.h"
 
 //-----------------------------------------------------------------------------
-Matrix<double> createGivenRotation(int _n, int _i, int _j, double _theta){
-	Matrix<double>  mat = createEye<double>(_n);
+Matrix<float> createGivenRotation(int _n, int _i, int _j, float _theta){
+	Matrix<float>  mat = createEye<float>(_n);
 
 	mat[_i*_n + _i] = cos(_theta);
 	mat[_j*_n + _j] = cos(_theta);
