@@ -1,8 +1,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////
-//	BOVIL: core
+//  BOVIL: core
 //
-//		Author: Pablo Raón Soria
-//		Date:	2014-03-05
+//    Author: Pablo Raón Soria
+//    Date: 2014-03-05
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -14,56 +14,55 @@
 #include <math.h>
 #include <string.h>
 #include <Arduino.h>
-
 //-----------------------------------------------------------------------------
 template <typename type_> 
 class Matrix{
-public:		// Main interface
-	Matrix();		// Default constructor
-	Matrix(int _rows, int _cols);		// Empty matrix constructor
-	Matrix(const type_* _mat, int _rows, int _cols);	// Full-defined matrix constructor
-	Matrix(const Matrix& _mat);		// Copy constructor
+public:   // Main interface
+  Matrix();   // Default constructor
+  Matrix(int _rows, int _cols);   // Empty matrix constructor
+  Matrix(const type_* _mat, int _rows, int _cols);  // Full-defined matrix constructor
+  Matrix(const Matrix& _mat);   // Copy constructor
 
-	~Matrix();		// De-constructor
+  ~Matrix();    // De-constructor
 
-	void show();
-	
-	type_* getMatrixPtr() const;
-	int getWidth() const;
-	int getHeight() const;
+  void show();
 
-public:	// Overloaded Operators
-	type_& operator[](const int _index) const;
-	type_& operator()(const int _i, const int _j);
-	const type_& operator()(const int _i, const int _j) const;
-	Matrix operator=(const Matrix& _mat);				// Assignement operator
-	Matrix operator+(const Matrix& _mat) const;		// Add operator
-	Matrix operator-(const Matrix& _mat) const;		// Sub operator
-	Matrix operator*(const Matrix& _mat) const;		// Mul operator
-	Matrix operator*(const type_ _scalar) const;		// Scalar operator
+  type_* getMatrixPtr() const;
+  int getWidth() const;
+  int getHeight() const;
+
+public: // Overloaded Operators
+  type_& operator[](const int _index) const;
+  type_& operator()(const int _i, const int _j);
+  const type_& operator()(const int _i, const int _j) const;
+  Matrix operator=(const Matrix& _mat);       // Assignement operator
+  Matrix operator+(const Matrix& _mat) const;   // Add operator
+  Matrix operator-(const Matrix& _mat) const;   // Sub operator
+  Matrix operator*(const Matrix& _mat) const;   // Mul operator
+  Matrix operator*(const type_ _scalar) const;    // Scalar operator
   Matrix operator/(const type_ _scalar) const;    // Scalar division
-	Matrix operator^(const double _exp) const;		// Pow operator     666 TODO:
+  Matrix operator^(const double _exp) const;    // Pow operator     666 TODO:
 
-public:	// Other operations	666 TODO: Change names
-	Matrix operator&(const Matrix& _mat) const;		// Projection operator._mat is projected to this
-	Matrix transpose();								// Transpose operator
-	type_ determinant();							// Determinant operator
+public: // Other operations 666 TODO: Change names
+  Matrix operator&(const Matrix& _mat) const;   // Projection operator._mat is projected to this
+  Matrix transpose();               // Transpose operator
+  type_ determinant();              // Determinant operator
 
   Matrix block(int _i, int _j, int _rows, int _cols);
-public:		// Various algorithms
-	double norm();
-	bool decompositionLU(Matrix& _L, Matrix& _U);
-	bool decompositionCholesky(Matrix& _L, Matrix& _Lt);
-	bool decompositionLDL(Matrix& _L, Matrix& _D, Matrix& _Lt);
-	bool decompositionQR_HH(Matrix& _Q, Matrix& _R);		// QR decomposition using Householder reflexions algorithm.
+public:   // Various algorithms
+  double norm();
+  bool decompositionLU(Matrix& _L, Matrix& _U);
+  bool decompositionCholesky(Matrix& _L, Matrix& _Lt);
+  bool decompositionLDL(Matrix& _L, Matrix& _D, Matrix& _Lt);
+  bool decompositionQR_HH(Matrix& _Q, Matrix& _R);    // QR decomposition using Householder reflexions algorithm.
 
-	Matrix inverse();		// Using QR algorithm
-	
-	Matrix pinv();
-	
-private:	// Private interface
-	int mRows, mCols;
-	type_* mPtr;
+  Matrix inverse();   // Using QR algorithm
+
+  Matrix pinv();
+
+private:  // Private interface
+  int mRows, mCols;
+  type_* mPtr;
 
 };
 //-----------------------------------------------------------------------------
@@ -78,24 +77,24 @@ Matrix<float> createGivenRotation(int _n, int _i, int _j, float _theta);
 //-----------------------------------------------------------------------------
 
 template<typename type_>
-    Matrix<type_>::Matrix() : mRows(0),
-      mCols(0),
-      mPtr(NULL){
-    }
+Matrix<type_>::Matrix() : mRows(0),
+mCols(0),
+mPtr(NULL){
+}
 
 //-----------------------------------------------------------------------------
 template<typename type_>
 Matrix<type_>::Matrix(int _rows, int _cols) : mRows(_rows),
-  mCols(_cols),
-  mPtr(new type_[_cols*_rows])  {
+mCols(_cols),
+mPtr(new type_[_cols*_rows])  {
   memset(mPtr, 0, sizeof(type_)* _cols * _rows);
 }
 
 //-----------------------------------------------------------------------------
 template<typename type_>
 Matrix<type_>::Matrix(const type_* _matPtr, int _rows, int _cols) : mRows(_rows),
-  mCols(_cols),
-  mPtr(new type_[_cols*_rows])  {
+mCols(_cols),
+mPtr(new type_[_cols*_rows])  {
   for (int i = 0; i < _cols*_rows; i++){
     mPtr[i] = _matPtr[i];
   }
@@ -104,8 +103,8 @@ Matrix<type_>::Matrix(const type_* _matPtr, int _rows, int _cols) : mRows(_rows)
 //-----------------------------------------------------------------------------
 template<typename type_>
 Matrix<type_>::Matrix(const Matrix<type_>& _mat) : mRows(_mat.mRows),
-  mCols(_mat.mCols),
-  mPtr(new type_[_mat.mCols*_mat.mRows]) {
+mCols(_mat.mCols),
+mPtr(new type_[_mat.mCols*_mat.mRows]) {
   for (int i = 0; i < mCols*mRows; i++){
     mPtr[i] = _mat.mPtr[i];
   }
@@ -123,17 +122,16 @@ template<typename type_>
 void Matrix<type_>::show(){
   Serial.print("[");
   for(unsigned i = 0; i < mRows; i++){
-	  for(unsigned j = 0; j < mCols; j++){
-		  Serial.print(mPtr[i * mCols + j]);
-		  if(j != mCols -1)
-			Serial.print(", \t");
-	  }
-	  if(i != mRows -1)
-		Serial.print(";\n");
+    for(unsigned j = 0; j < mCols; j++){
+      Serial.print(mPtr[i * mCols + j]);
+      if(j != mCols -1)
+        Serial.print(", \t");
+    }
+    if(i != mRows -1)
+      Serial.print(";\n");
   }
   Serial.print("]\n");
 }
-
 //-----------------------------------------------------------------------------
 template<typename type_>
 type_* Matrix<type_>::getMatrixPtr() const{
@@ -336,8 +334,8 @@ type_ Matrix<type_>::determinant() {
 template<typename type_>
 Matrix<type_> Matrix<type_>::block(int _i, int _j, int _rows, int _cols){
   Matrix<type_> res(_rows, _cols);
-  for(unsigned i = _i ; i < mRows; i++){
-    for(unsigned j = _j; j< mCols; j++){
+  for(unsigned i = _i ; i < _i+_rows; i++){
+    for(unsigned j = _j; j< _j+_cols; j++){
       res(i-_i, j-_j) = (*this)(i,j);
     }
   }
@@ -391,58 +389,23 @@ template<typename type_>
 bool Matrix<type_>::decompositionQR_HH(Matrix<type_>& _Q, Matrix<type_>& _R){
   assert(mRows >= mCols);
   int t = 0;
-  
+
   int dim = mRows > mCols ? mRows : mCols;
   _R = Matrix<type_>(getMatrixPtr(), mRows, mCols);
   _Q = createEye<type_>(dim);
-
-  Serial.println("Initial R: ");
-  _R.show();
-  Serial.println("Initial Q: ");
-  _Q.show();
-  
-  for(unsigned iter = 0;  iter < mCols-1; iter++){
-    Matrix<type_> A = _R.block(iter, iter, mRows - iter, mCols -iter);
-    Serial.println("---------------------------");
-    Serial.print("Iter: ");
-    Serial.print(iter);
-    Serial.println();
-    Matrix<type_> Qi = createEye<float>(mRows);
-    Matrix<type_> x(A.getHeight(),1);
-	  Serial.print("Current A: ");
-	  A.show();
-    for(unsigned row = 0 ; row < A.getHeight(); row++){
-      x(row,0) = A(row,0);
+  for(unsigned iter = 0;  iter < mCols; iter++){
+    Matrix<type_> x = _R.block(0,iter,mRows,1);
+    for (unsigned i = 0; i < iter; i++) {
+      x(i,0) = 0;
     }
-    Matrix<type_> ei(A.getHeight(),1);
-    ei(0,0) = 1;
-    Matrix<type_> u;
-    float alpha = -x.norm();
-    u = x +ei*alpha;
-    Serial.print("u: ");
-    u.show();
-    Matrix<type_> v = u/float(u.norm());
-    Serial.print("v: ");
-    v.show();
-    Matrix<type_> auxQ = v*v.transpose()*(1 + (x.transpose()*v)(0,0)/(v.transpose()*x)(0,0));
-	for(unsigned i = 0; i < A.getHeight(); i++){
-		for(unsigned j = 0; j < A.getWidth(); j++){
-			Qi(iter+i, iter+j) = Qi(iter+i, iter+j) - auxQ(i,j);
-		}
-	}
-    Serial.print("Qi: ");
-    Qi.show();
-    
-    _R = Qi*_R;
-    _Q = _Q*Qi;
-    Serial.print("R: ");
-    _R.show();
-    Serial.print("Q: ");
-    _Q.show();
-    
+    Matrix<type_> ei(x.getHeight(),1);
+    ei(iter,0) = 1;
+    Matrix<type_> u = x + ei*x.norm()*(x(0,0)>0?-1:1);
+    u = u/u.norm();
+    Matrix<type_> Hu = createEye<type_>(mRows) - u*u.transpose()*2;
+    _R = Hu*_R;
+    _Q = _Q*Hu;
   }
-
-  _Q = _Q.transpose();
 
   return true;
 }
@@ -490,22 +453,21 @@ Matrix<type_> Matrix<type_>::inverse(){
 //-----------------------------------------------------------------------------
 template<typename type_>
 Matrix<type_> Matrix<type_>::pinv(){
-  // 666 TODO: how to do inverse? try with gaussian elimination
-  assert(mRows > mCols);
-  
-  //Matrix Q,R;
-  //this->decompositionQR_GR(Q,R);
- // Matrix R1(mCols, mCols);
- // memcpy(R1.getMatrixPtr(), R.getMatrixPtr(), sizeof(type_)*mCols*mCols);
- // R1 = R1.inverse();
- // Matrix R2(mCols, mRows);
- // memcpy(R2.getMatrixPtr(), R1.getMatrixPtr(), sizeof(type_)*mCols*mCols);
- // memset(R2.getMatrixPtr()+9, 0,3);
- // R.show();
- // R1.show();
- // R2.show();
-  
-  //Matrix pinv=R2*Q.transpose();
+  assert(mRows >= mCols);
+
+  Matrix Q,R;
+  this->decompositionQR_HH(Q,R);
+  Matrix R1(mCols, mCols);
+  memcpy(R1.getMatrixPtr(), R.getMatrixPtr(), sizeof(type_)*mCols*mCols);
+  R1 = R1.inverse();
+  Matrix R2(mCols, mRows);
+  for (unsigned i = 0; i < mCols; i++) {
+    for (unsigned j = 0; j < mCols; j++) {
+      R2(i,j) = R1(i,j);
+    }
+  }
+  Matrix pinv=R2*Q.transpose();
+  return pinv;
 }
 
 //-----------------------------------------------------------------------------
@@ -522,4 +484,4 @@ Matrix<type_> createEye(int _n){
   return mat;
 }
 
-#endif	// _BOVIL_CORE_MATH_MATRIX_H_
+#endif  // _BOVIL_CORE_MATH_MATRIX_H_

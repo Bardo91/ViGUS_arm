@@ -20,21 +20,17 @@ void setup() {
 
 // Main loop.
 void loop() {
- /* float matArray[12] = { 1,-1, 4, 
-                        1, 4, -2, 
-                        1, 4, 2, 
-                        1,-1, 0};*/
-  float matArray[9] = { 12,-51,4, 
-                        6,167,-68, 
-                        -4, 24, -41};
-  Matrix<float> m43(matArray, 3,3);
+ float matArray[6] = { 1,1.26,
+              1, 1.82,
+              1, 2.22};
+  Matrix<float> m43(matArray, 3,2);
+  /*float matArray[9] = { 12,-51,4, 
+  6,167,-68, 
+  -4, 24, -41};
+  Matrix<float> m43(matArray, 3,3);*/
   m43.show();
   Serial.println("---------");
-  Matrix<float> Q,R;
-  m43.decompositionQR_HH(Q,R);
-  Q.show();
-  R.show();
-  Serial.println("---------");
-  //pinv.show();
+  Matrix<float> pinv = m43.pinv();
+  pinv.show();
   delay(1000000);
 }
