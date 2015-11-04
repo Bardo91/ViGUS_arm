@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <math.h>
 #include <string.h>
-
+#include <Arduino.h>
 
 //-----------------------------------------------------------------------------
 template <typename type_> 
@@ -26,6 +26,8 @@ public:		// Main interface
 
 	~Matrix();		// De-constructor
 
+	void show();
+	
 	type_* getMatrixPtr() const;
 	int getWidth() const;
 	int getHeight() const;
@@ -55,7 +57,8 @@ public:		// Various algorithms
 
 	Matrix inverse();		// Using QR algorithm
 	
-
+	Matrix pinv();
+	
 private:	// Private interface
 	int mRows, mCols;
 	type_* mPtr;
@@ -111,6 +114,22 @@ template<typename type_>
 Matrix<type_>::~Matrix(){
   if (mPtr)
     delete[] mPtr;
+}
+
+//-----------------------------------------------------------------------------
+template<typename type_>
+void Matrix<type_>::show(){
+  Serial.print("[");
+  for(unsigned i = 0; i < mRows; i++){
+	  for(unsigned j = 0; j < mCols; j++){
+		  Serial.print(mPtr[i * mCols + j]);
+		  if(j != mCols -1)
+			Serial.print("; \t");
+	  }
+	  if(i != mRows -1)
+		Serial.print("\n");
+  }
+  Serial.print("]\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -411,6 +430,29 @@ Matrix<type_> Matrix<type_>::inverse(){
   }
 
   return matInv;
+}
+
+//-----------------------------------------------------------------------------
+template<typename type_>
+Matrix<type_> Matrix<type_>::pinv(){
+  // 666 TODO: how to do inverse? try with gaussian elimination
+  assert(mRows > mCols);
+  
+  Matrix Q,R;
+  this->decompositionQR_GR(Q,R);
+  Q.show();
+  R.show();
+ // Matrix R1(mCols, mCols);
+ // memcpy(R1.getMatrixPtr(), R.getMatrixPtr(), sizeof(type_)*mCols*mCols);
+ // R1 = R1.inverse();
+ // Matrix R2(mCols, mRows);
+ // memcpy(R2.getMatrixPtr(), R1.getMatrixPtr(), sizeof(type_)*mCols*mCols);
+ // memset(R2.getMatrixPtr()+9, 0,3);
+ // R.show();
+ // R1.show();
+ // R2.show();
+  
+  //Matrix pinv=R2*Q.transpose();
 }
 
 //-----------------------------------------------------------------------------
