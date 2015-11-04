@@ -5,20 +5,11 @@
 //                                          //
 //////////////////////////////////////////////
 
-// Includes
-#include <Servo.h>
-#include "Arm.h"
-#include "Trajectory.h"
+#ifndef TRAJECTORY_H_
+#define TRAJECTORY_H_
 
-Arm arm;
+#include "vector.h"
 
-// Initializing .
-void setup() {
-  //arm.init();
-  Serial.begin(115200);
-}
+vector<float> parabolaTwoPoints2d(vector<float> _x1, vector<float> _x2, float _angle);
 
-// Main loop.
-void loop() {
- 
-}
+#endif  //  TRAJECTORY_H_
