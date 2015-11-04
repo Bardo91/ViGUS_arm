@@ -41,6 +41,7 @@ public:	// Overloaded Operators
 	Matrix operator-(const Matrix& _mat) const;		// Sub operator
 	Matrix operator*(const Matrix& _mat) const;		// Mul operator
 	Matrix operator*(const type_ _scalar) const;		// Scalar operator
+  Matrix operator/(const type_ _scalar) const;    // Scalar division
 	Matrix operator^(const double _exp) const;		// Pow operator     666 TODO:
 
 public:	// Other operations	666 TODO: Change names
@@ -48,12 +49,13 @@ public:	// Other operations	666 TODO: Change names
 	Matrix transpose();								// Transpose operator
 	type_ determinant();							// Determinant operator
 
+  Matrix block(int _i, int _j, int _rows, int _cols);
 public:		// Various algorithms
 	double norm();
 	bool decompositionLU(Matrix& _L, Matrix& _U);
 	bool decompositionCholesky(Matrix& _L, Matrix& _Lt);
 	bool decompositionLDL(Matrix& _L, Matrix& _D, Matrix& _Lt);
-	bool decompositionQR_GR(Matrix& _Q, Matrix& _R);		// QR decomposition using Householder reflexions algorithm.
+	bool decompositionQR_HH(Matrix& _Q, Matrix& _R);		// QR decomposition using Householder reflexions algorithm.
 
 	Matrix inverse();		// Using QR algorithm
 	
@@ -124,10 +126,10 @@ void Matrix<type_>::show(){
 	  for(unsigned j = 0; j < mCols; j++){
 		  Serial.print(mPtr[i * mCols + j]);
 		  if(j != mCols -1)
-			Serial.print("; \t");
+			Serial.print(", \t");
 	  }
 	  if(i != mRows -1)
-		Serial.print("\n");
+		Serial.print(";\n");
   }
   Serial.print("]\n");
 }
@@ -259,6 +261,18 @@ Matrix<type_> Matrix<type_>::operator* (const type_ _scalar) const{
 
 //-----------------------------------------------------------------------------
 template<typename type_>
+Matrix<type_>  Matrix<type_>::operator/(const type_ _scalar) const{    // Scalar division
+  Matrix<type_> mat(mRows, mCols);
+
+  for (int i = 0; i < mRows; i++){
+    for (int j = 0; j < mCols; j++){
+      mat(i, j) = (*this)(i, j) / _scalar;
+    }
+  }
+  return mat;
+}
+//-----------------------------------------------------------------------------
+template<typename type_>
 Matrix<type_> Matrix<type_>::operator^(const double _exp) const{
   Matrix<type_> mat(*this);
 
@@ -319,6 +333,18 @@ type_ Matrix<type_>::determinant() {
 }
 
 //-----------------------------------------------------------------------------
+template<typename type_>
+Matrix<type_> Matrix<type_>::block(int _i, int _j, int _rows, int _cols){
+  Matrix<type_> res(_rows, _cols);
+  for(unsigned i = _i ; i < mRows; i++){
+    for(unsigned j = _j; j< mCols; j++){
+      res(i-_i, j-_j) = (*this)(i,j);
+    }
+  }
+  return res;
+}
+
+//-----------------------------------------------------------------------------
 //-------------------------- Various algorithms -------------------------------
 //------------------------------------------------------------------------------
 template<typename type_>
@@ -362,29 +388,58 @@ bool Matrix<type_>::decompositionLU(Matrix& _L, Matrix& _U){
 
 //-----------------------------------------------------------------------------
 template<typename type_>
-bool Matrix<type_>::decompositionQR_GR(Matrix<type_>& _Q, Matrix<type_>& _R){
-
-  // 666 TODO: improve without for loop 
+bool Matrix<type_>::decompositionQR_HH(Matrix<type_>& _Q, Matrix<type_>& _R){
+  assert(mRows >= mCols);
   int t = 0;
-  for (int i = 1; i <= mRows; i++){
-    t += i;
-  }
-  if (mRows < mCols)
-    t += (mRows - mCols) * mCols;
-
+  
   int dim = mRows > mCols ? mRows : mCols;
-  _R = *this;
+  _R = Matrix<type_>(getMatrixPtr(), mRows, mCols);
   _Q = createEye<type_>(dim);
 
-  // Creating Givens Rotation matrix
-  for (int j = 0; j < mCols; j++){
-    for (int i = mRows - 1; i > j; i--){
-      float theta = atan(-_R[i*dim + j] / _R[(i - 1)*dim + j]);
-      Matrix<type_> Gi = createGivenRotation(dim, i, i - 1, theta);
-
-      _R = Gi * _R;
-      _Q = Gi * _Q;
+  Serial.println("Initial R: ");
+  _R.show();
+  Serial.println("Initial Q: ");
+  _Q.show();
+  
+  for(unsigned iter = 0;  iter < mCols-1; iter++){
+    Matrix<type_> A = _R.block(iter, iter, mRows - iter, mCols -iter);
+    Serial.println("---------------------------");
+    Serial.print("Iter: ");
+    Serial.print(iter);
+    Serial.println();
+    Matrix<type_> Qi = createEye<float>(mRows);
+    Matrix<type_> x(A.getHeight(),1);
+	  Serial.print("Current A: ");
+	  A.show();
+    for(unsigned row = 0 ; row < A.getHeight(); row++){
+      x(row,0) = A(row,0);
     }
+    Matrix<type_> ei(A.getHeight(),1);
+    ei(0,0) = 1;
+    Matrix<type_> u;
+    float alpha = -x.norm();
+    u = x +ei*alpha;
+    Serial.print("u: ");
+    u.show();
+    Matrix<type_> v = u/float(u.norm());
+    Serial.print("v: ");
+    v.show();
+    Matrix<type_> auxQ = v*v.transpose()*(1 + (x.transpose()*v)(0,0)/(v.transpose()*x)(0,0));
+	for(unsigned i = 0; i < A.getHeight(); i++){
+		for(unsigned j = 0; j < A.getWidth(); j++){
+			Qi(iter+i, iter+j) = Qi(iter+i, iter+j) - auxQ(i,j);
+		}
+	}
+    Serial.print("Qi: ");
+    Qi.show();
+    
+    _R = Qi*_R;
+    _Q = _Q*Qi;
+    Serial.print("R: ");
+    _R.show();
+    Serial.print("Q: ");
+    _Q.show();
+    
   }
 
   _Q = _Q.transpose();
@@ -438,10 +493,8 @@ Matrix<type_> Matrix<type_>::pinv(){
   // 666 TODO: how to do inverse? try with gaussian elimination
   assert(mRows > mCols);
   
-  Matrix Q,R;
-  this->decompositionQR_GR(Q,R);
-  Q.show();
-  R.show();
+  //Matrix Q,R;
+  //this->decompositionQR_GR(Q,R);
  // Matrix R1(mCols, mCols);
  // memcpy(R1.getMatrixPtr(), R.getMatrixPtr(), sizeof(type_)*mCols*mCols);
  // R1 = R1.inverse();
