@@ -10,6 +10,8 @@
 
 #include "vector.h"
 
-vector<float> parabolaTwoPoints2d(vector<float> _x1, vector<float> _x2, float _angle);
+void parabola2d(float _x1[2], float _x2[2], unsigned _nPoints, float *_result);
+void line2d(float _x1[2], float _x2[2], unsigned _nPoints, float *_result);
+
 
 #endif  //  TRAJECTORY_H_
