@@ -60,6 +60,20 @@ void Arm::setMaxSpeed(int _maxSpeed){
 }
 
 //--------------------------------------------------------------------------------
+void Arm::command(Command &_cmd){
+  switch(_cmd.type()){
+    case Command::cmdAngles:
+      angleCmd(_cmd);
+      break;
+    case Command::cmdGlobal:
+      break;
+    case Command::cmdSpecial:
+      break;
+    default:
+      break;
+  }
+}
+//--------------------------------------------------------------------------------
 void Arm::home(){
   mThetaTarget0 = 90;
   mThetaTarget1 = 0;
@@ -79,5 +93,30 @@ void Arm::initialActionPose(){
   mThetaTarget4 = 90;
   mThetaTarget5 = 90;
   mThetaTarget6 = 90;
+}
+
+//--------------------------------------------------------------------------------
+// Private methods
+//--------------------------------------------------------------------------------
+
+void Arm::angleCmd(const Command &_cmd){
+  const int * thetas = _cmd.angles();
+  mThetaTarget0 = thetas[0];
+  mThetaTarget1 = thetas[1];
+  mThetaTarget2 = thetas[2];
+  mThetaTarget3 = thetas[3];
+  mThetaTarget4 = thetas[4];
+  mThetaTarget5 = thetas[5];
+  mThetaTarget6 = thetas[6];
+}
+
+//--------------------------------------------------------------------------------
+void Arm::globalCmd(const Command &_cmd){
+  
+}
+
+//--------------------------------------------------------------------------------
+void Arm::specialCmd(const Command &_cmd){
+  
 }
 

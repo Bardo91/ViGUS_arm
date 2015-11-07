@@ -25,7 +25,9 @@ public:   // Public Interface
   void special(eSpecialType _cmd);
 
   const int* angles() const;
-
+  Command::eType type();
+  Command::eSpecialType specialType();
+  
 private:  // Private methods
   eType parseType(String &_raw);
   bool parseAngles(String &_raw);

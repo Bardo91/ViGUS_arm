@@ -15,21 +15,16 @@ void setup() {
   arm.initialActionPose();
 }
 
-String serialBuffer;
 Command lastCmd;
 void loop() {
   if(Serial.available()){
+    String serialBuffer;
     Serial.println("Data available");
-    while(Serial.available()){
-      serialBuffer = Serial.readStringUntil('\n');
-    }
+    serialBuffer = Serial.readStringUntil('\n');
+    Serial.println(serialBuffer);
     if(lastCmd.parse(serialBuffer)){
-      Serial.println("Command parsed");
-      const int *thetas = lastCmd.angles();
-      for(unsigned i = 0; i < 7; i++){
-        Serial.println(thetas[i]);
-      }
-      Serial.println("----------------");
+      Serial.println("Command Parsed");
+      arm.command(lastCmd);
     }
   }
   arm.spin();

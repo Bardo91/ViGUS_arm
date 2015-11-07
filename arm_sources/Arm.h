@@ -31,7 +31,7 @@ public:   // Public interface
   void setMaxSpeed(int _maxSpeed);
 
   /// Set inputcommand as next target
-  void command(Command _cmd);
+  void command(Command &_cmd);
   
   // Other methods.
   /// Send Robot to home
@@ -41,7 +41,9 @@ public:   // Public interface
   void initialActionPose();
   
 private:  // Private methods
-  
+  void angleCmd(const Command &_cmd);
+  void globalCmd(const Command &_cmd);
+  void specialCmd(const Command &_cmd);
 private:  // Members
   Servo mBaseRot;
   Servo mExtender0, mExtender1, mExtender2, mExtender3;
