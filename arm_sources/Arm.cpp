@@ -61,23 +61,23 @@ void Arm::setMaxSpeed(int _maxSpeed){
 
 //--------------------------------------------------------------------------------
 void Arm::home(){
-  mTheta0 = 90;
-  mTheta1 = 0;
-  mTheta2 = 180;
-  mTheta3 = 0;
-  mTheta4 = 90;
-  mTheta5 = 90;
-  mTheta6 = 90;
+  mThetaTarget0 = 90;
+  mThetaTarget1 = 0;
+  mThetaTarget2 = 180;
+  mThetaTarget3 = 0;
+  mThetaTarget4 = 90;
+  mThetaTarget5 = 90;
+  mThetaTarget6 = 90;
 }
 
 //--------------------------------------------------------------------------------
 void Arm::initialActionPose(){
-  mTheta0 = 90;
-  mTheta1 = 90;
-  mTheta2 = 30;
-  mTheta3 = 75;
-  mTheta4 = 90;
-  mTheta5 = 90;
-  mTheta6 = 90;
+  mThetaTarget0 = 90;
+  mThetaTarget1 = 90;
+  mThetaTarget2 = 30;
+  mThetaTarget3 = 75;
+  mThetaTarget4 = 90;
+  mThetaTarget5 = 90;
+  mThetaTarget6 = 90;
 }
 

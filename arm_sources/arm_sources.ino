@@ -33,6 +33,7 @@ void loop() {
     }
   }
   arm.spin();
+  delay(10);
 }
 
  
