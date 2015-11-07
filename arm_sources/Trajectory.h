@@ -15,3 +15,4 @@ void line2d(float _x1[2], float _x2[2], unsigned _nPoints, float *_result);
 
 
 #endif  //  TRAJECTORY_H_
+

@@ -6,7 +6,7 @@
 //////////////////////////////////////////////
 
 #include "Command.h"
-
+#include <Arduino.h>
 //--------------------------------------------------------------------------------
 Command::Command(){
   
@@ -15,6 +15,31 @@ Command::Command(){
 //--------------------------------------------------------------------------------
 Command::Command(String _rawCommand){
   
+}
+
+//--------------------------------------------------------------------------------
+bool Command::parse(String _raw){
+  if(_raw[0] != '{')
+    return false;
+    
+  _raw.toLowerCase();
+  _raw = _raw.substring(1);  // Remove initial '{'
+  eType type = parseType(_raw);
+  switch(type){
+    case cmdAngles:
+      return parseAngles(_raw);
+      break;
+    case cmdGlobal:
+      return parseGlobal(_raw);
+      break;
+    case cmdSpecial:
+      return parseSpecial(_raw);
+      break;
+    case cmdError:
+    default:
+      return false;
+      break;
+  }
 }
 
 //--------------------------------------------------------------------------------
@@ -31,51 +56,80 @@ void Command::global(float _x, float _y, float _z){
 void Command::special(Command::eSpecialType _cmd){
   
 }
-  
+//--------------------------------------------------------------------------------
+const int* Command::angles() const{
+  return mThetas;
+}
+
 //--------------------------------------------------------------------------------
 // Private methods
 //--------------------------------------------------------------------------------
-bool Command::parse(String _raw){
-  eType type;
-  if((type = parseType(_raw)) != error){
-    switch(type){
-      case angles:
-        return parseAngles(_raw);
-        break;
-      case global:
-        return parteGlobal(_raw);
-        break;
-      case special:
-        return parseSpecial(_raw);
-        break;
-      case error:
-      default:
-        return false;
-        break;
-    }
-  } else{
-    return false;
+
+//--------------------------------------------------------------------------------
+Command::eType Command::parseType(String &_raw){
+  String type = _raw.substring(0,_raw.indexOf(','));
+  _raw = _raw.substring(_raw.indexOf(',')+1);
+  if(type.equals("angles")){
+    return cmdAngles;
+  } else if(type.equals("global")){
+    return cmdGlobal;
+  } else if(type.equals("special")){
+    return cmdSpecial;
+  } else {
+    return cmdError;
   }
 }
 
 //--------------------------------------------------------------------------------
-Command::eType Command::parseType(String &_raw){
-  
+bool Command::parseAngles(String &_raw){
+  int nextComa;
+  while((nextComa =_raw.indexOf(',')) != -1){
+    String pair = _raw.substring(0, nextComa);
+    String key = pair.substring(0,pair.indexOf(':'));
+    String value = pair.substring(pair.indexOf(':')+1);
+    _raw = _raw.substring(nextComa+1);
+    if(key.toInt()>0 && key.toInt() < 8){
+      mThetas[key.toInt() -1] = value.toInt();
+    }else{
+      mType = cmdError;
+      return false;
+    }
+  }
 }
 
 //--------------------------------------------------------------------------------
-bool Command::parteAngles(String &_raw){
-  
+bool Command::parseGlobal(String &_raw){
+  int nextComa;
+  while((nextComa =_raw.indexOf(',')) != -1){
+    String pair = _raw.substring(0, nextComa);
+    String key = pair.substring(0,pair.indexOf(':'));
+    String value = pair.substring(pair.indexOf(':')+1);
+    if(key.equals("x")){
+      mX = value.toFloat();
+    }else if(key.equals("y")){
+      mY = value.toFloat();
+    }else if(key.equals("z")){
+      mZ = value.toFloat();
+    }else{
+      mType = cmdError;
+      return false;
+    }
+  }
 }
 
 //--------------------------------------------------------------------------------
-bool Command::parteGlobal(String &_raw){
-  
-}
-
-//--------------------------------------------------------------------------------
-bool parseSpecial(String &_raw){
-  
+bool Command::parseSpecial(String &_raw){
+  String specialCmd =_raw.substring(0,_raw.indexOf('}'));
+  if(specialCmd.equals("home")){
+    mSpecialType = espHome;
+    return true;
+  } else if(specialCmd.equals("initPos")){
+    mSpecialType = espInitPos;
+    return true;
+  } else {
+    mType = cmdError;
+    return false;
+  }
 }
 
 //--------------------------------------------------------------------------------

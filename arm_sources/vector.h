@@ -73,3 +73,4 @@ void vector<Type_>::push_back(Type_ _data){
   mSize ++;
 }
 #endif  //   VECTOR_H_
+
