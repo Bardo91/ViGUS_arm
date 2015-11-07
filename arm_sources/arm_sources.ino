@@ -11,8 +11,8 @@ Arm arm;
 void setup() {
   arm.init();
   Serial.begin(115200);
-  arm.setMaxSpeed(5);
-  arm.initialActionPose();
+  arm.setMaxSpeed(1);
+  arm.extendVertical();
 }
 
 Command lastCmd;

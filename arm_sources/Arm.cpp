@@ -96,6 +96,17 @@ void Arm::initialActionPose(){
 }
 
 //--------------------------------------------------------------------------------
+void Arm::extendVertical(){
+  mThetaTarget0 = 90;
+  mThetaTarget1 = 75;
+  mThetaTarget2 = 10;
+  mThetaTarget3 = 180;
+  mThetaTarget4 = 90;
+  mThetaTarget5 = 90;
+  mThetaTarget6 = 90;
+}
+
+//--------------------------------------------------------------------------------
 // Private methods
 //--------------------------------------------------------------------------------
 

@@ -36,9 +36,10 @@ public:   // Public interface
   // Other methods.
   /// Send Robot to home
   void home();
-
   /// Send Robot to initial stable position for action
   void initialActionPose();
+  /// Extend vertically the arm
+  void extendVertical();
   
 private:  // Private methods
   void angleCmd(const Command &_cmd);
