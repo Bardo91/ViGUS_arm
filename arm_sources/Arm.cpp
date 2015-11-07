@@ -18,6 +18,8 @@ void Arm::init(){
   mHandRot.attach(cPinHandRot);
   mHandGrab.attach(cPinHandGrab);
 }
+
+//--------------------------------------------------------------------------------
 int signo(int _var){
   if(_var < 0)
     return -1;
@@ -58,64 +60,23 @@ void Arm::setMaxSpeed(int _maxSpeed){
 }
 
 //--------------------------------------------------------------------------------
-void Arm::fkRotateBase(int _theta0){
-  mThetaTarget0 = _theta0;
-}
-
-//--------------------------------------------------------------------------------
-void Arm::fkMoveExtender(int _theta1, int _theta2, int _theta3, int _theta4){
-  mThetaTarget1 = _theta1;
-  mThetaTarget2 = _theta2;
-  mThetaTarget3 = _theta3;
-  mThetaTarget4 = _theta4;
-}
-
-//--------------------------------------------------------------------------------
-void Arm::fkRotateHand(int _theta5){
-  mThetaTarget5 = _theta5;
-}
-
-//--------------------------------------------------------------------------------
-void Arm::fkHandClosing(int _theta6){
-  mThetaTarget6 = _theta6;
-}
-
-//--------------------------------------------------------------------------------
 void Arm::home(){
-  fkRotateBase(90);
-  fkMoveExtender(0,180,0,90);
-  fkRotateHand(90);
-  fkHandClosing(90);
+  mTheta0 = 90;
+  mTheta1 = 0;
+  mTheta2 = 180;
+  mTheta3 = 0;
+  mTheta4 = 90;
+  mTheta5 = 90;
+  mTheta6 = 90;
 }
 
 //--------------------------------------------------------------------------------
 void Arm::initialActionPose(){
-  fkRotateBase(90);
-  fkMoveExtender(90,30,75,90);
-  fkRotateHand(90);
-  fkHandClosing(90);
-}
-
-//--------------------------------------------------------------------------------
-void Arm::target(float *_target){
-  float target[7];
-  _target[0] = mThetaTarget0;
-  _target[1] = mThetaTarget1;
-  _target[2] = mThetaTarget2;
-  _target[3] = mThetaTarget3;
-  _target[4] = mThetaTarget4;
-  _target[5] = mThetaTarget5;
-  _target[6] = mThetaTarget6;
-}
-
-//--------------------------------------------------------------------------------
-void Arm::position(float* _position){
-  float pos[7];
-  _position[0] = mTheta0;
-  _position[1] = mTheta1;
-  _position[2] = mTheta2;
-  _position[3] = mTheta3;
-  _position[4] = mTheta4;
-  _position[5] = mTheta5;
-  _position[6] = mTheta6;
+  mTheta0 = 90;
+  mTheta1 = 90;
+  mTheta2 = 30;
+  mTheta3 = 75;
+  mTheta4 = 90;
+  mTheta5 = 90;
+  mTheta6 = 90;
 }

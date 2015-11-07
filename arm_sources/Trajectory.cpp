@@ -15,7 +15,7 @@ void parabola2d(float _x1[2], float _x2[2], unsigned _nPoints, float *_result){
 //--------------------------------------------------------------------------------
 void line2d(float _x1[2], float _x2[2], unsigned _nPoints, float **_result){
   // Allocate new memory
-  _result = new (float*)[2];
+  _result = new float*[2];
   _result[0] = new float[_nPoints];
   _result[1] = new float[_nPoints];
 

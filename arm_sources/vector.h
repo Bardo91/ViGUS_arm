@@ -33,12 +33,14 @@ private:
 template<typename Type_>
 vector<Type_>::vector(){
   mData = new Type_[10];
+  mReservedSize = 10;
 }
 
 //----------------------------------------------------------------------------
 template<typename Type_>
 vector<Type_>::vector(unsigned _size){
   mData = new Type_[_size];
+  mReservedSize = _size;
 }
 
 //----------------------------------------------------------------------------
@@ -59,13 +61,14 @@ Type_ &vector<Type_>::operator[](unsigned _i){
 template<typename Type_>
 void vector<Type_>::push_back(Type_ _data){
   if(mSize == mReservedSize){
-    Type_ *newPtr = new Type_[int(mReservedSize*sqrt(2))];
-    memcpy(newPtr, mData, mSize);
+    mReservedSize = mReservedSize*2;
+    Type_ *newPtr = new Type_[mReservedSize];
+    memcpy(newPtr, mData, sizeof(float)*mSize);
     delete mData;
     mData = newPtr;
     newPtr = NULL;
   }    
-    
+
   mData[mSize] = _data;
   mSize ++;
 }
