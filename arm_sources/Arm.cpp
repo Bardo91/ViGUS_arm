@@ -28,30 +28,18 @@ int signo(int _var){
 }
 //--------------------------------------------------------------------------------
 void Arm::spin(){
-  // 666 SO MANY CALCS
-  int speed0 = (mThetaTarget0 - mTheta0);
-  int speed1 = (mThetaTarget1 - mTheta1);
-  int speed2 = (mThetaTarget2 - mTheta2);
-  int speed3 = (mThetaTarget3 - mTheta3);
-  int speed4 = (mThetaTarget4 - mTheta4);
-  int speed5 = (mThetaTarget5 - mTheta5);
-  int speed6 = (mThetaTarget6 - mTheta6);
+  for(unsigned i = 0; i < 7; i++){
+    int speed = (mThetasTarget[i] - mThetas[i]);
+    mThetas[i] += abs(speed) > mMaxSpeed ? signo(speed)*mMaxSpeed : speed;
+  }
   
-  mTheta0 += abs(speed0) > mMaxSpeed ? signo(speed0)*mMaxSpeed : speed0;
-  mTheta1 += abs(speed1) > mMaxSpeed ? signo(speed1)*mMaxSpeed : speed1;
-  mTheta2 += abs(speed2) > mMaxSpeed ? signo(speed2)*mMaxSpeed : speed2;
-  mTheta3 += abs(speed3) > mMaxSpeed ? signo(speed3)*mMaxSpeed : speed3;
-  mTheta4 += abs(speed4) > mMaxSpeed ? signo(speed4)*mMaxSpeed : speed4;
-  mTheta5 += abs(speed5) > mMaxSpeed ? signo(speed5)*mMaxSpeed : speed5;
-  mTheta6 += abs(speed6) > mMaxSpeed ? signo(speed6)*mMaxSpeed : speed6;
-  
-  mBaseRot.write(mTheta0);
-  mExtender0.write(mTheta1);
-  mExtender1.write(mTheta2);
-  mExtender2.write(mTheta3);
-  mExtender3.write(mTheta4);
-  mHandRot.write(mTheta5);
-  mHandGrab.write(mTheta6);
+  mBaseRot.write(mThetas[0]);
+  mExtender0.write(mThetas[1]);
+  mExtender1.write(mThetas[2]);
+  mExtender2.write(mThetas[3]);
+  mExtender3.write(mThetas[4]);
+  mHandRot.write(mThetas[5]);
+  mHandGrab.write(mThetas[6]);
 }
 
 //--------------------------------------------------------------------------------
@@ -76,35 +64,35 @@ void Arm::command(Command &_cmd){
 }
 //--------------------------------------------------------------------------------
 void Arm::home(){
-  mThetaTarget0 = 90;
-  mThetaTarget1 = 0;
-  mThetaTarget2 = 180;
-  mThetaTarget3 = 0;
-  mThetaTarget4 = 90;
-  mThetaTarget5 = 90;
-  mThetaTarget6 = 90;
+  mThetasTarget[0] = 90;
+  mThetasTarget[1] = 0;
+  mThetasTarget[2] = 180;
+  mThetasTarget[3] = 0;
+  mThetasTarget[4] = 90;
+  mThetasTarget[5] = 90;
+  mThetasTarget[6] = 90;
 }
 
 //--------------------------------------------------------------------------------
 void Arm::initialActionPose(){
-  mThetaTarget0 = 90;
-  mThetaTarget1 = 90;
-  mThetaTarget2 = 30;
-  mThetaTarget3 = 75;
-  mThetaTarget4 = 90;
-  mThetaTarget5 = 90;
-  mThetaTarget6 = 90;
+  mThetasTarget[0] = 90;
+  mThetasTarget[1] = 90;
+  mThetasTarget[2] = 30;
+  mThetasTarget[3] = 75;
+  mThetasTarget[4] = 90;
+  mThetasTarget[5] = 90;
+  mThetasTarget[6] = 90;
 }
 
 //--------------------------------------------------------------------------------
 void Arm::extendVertical(){
-  mThetaTarget0 = 90;
-  mThetaTarget1 = 75;
-  mThetaTarget2 = 10;
-  mThetaTarget3 = 180;
-  mThetaTarget4 = 90;
-  mThetaTarget5 = 90;
-  mThetaTarget6 = 90;
+  mThetasTarget[0] = 90;
+  mThetasTarget[1] = 75;
+  mThetasTarget[2] = 10;
+  mThetasTarget[3] = 180;
+  mThetasTarget[4] = 90;
+  mThetasTarget[5] = 90;
+  mThetasTarget[6] = 90;
 }
 
 //--------------------------------------------------------------------------------
@@ -112,14 +100,7 @@ void Arm::extendVertical(){
 //--------------------------------------------------------------------------------
 
 void Arm::angleCmd(Command _cmd){
-  const int * thetas = _cmd.angles();
-  mThetaTarget0 = thetas[0];
-  mThetaTarget1 = thetas[1];
-  mThetaTarget2 = thetas[2];
-  mThetaTarget3 = thetas[3];
-  mThetaTarget4 = thetas[4];
-  mThetaTarget5 = thetas[5];
-  mThetaTarget6 = thetas[6];
+  memcpy(mThetas, _cmd.angles(), sizeof(int)*7);
 }
 
 //--------------------------------------------------------------------------------
