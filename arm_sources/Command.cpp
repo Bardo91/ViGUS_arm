@@ -137,13 +137,17 @@ bool Command::parseGlobal(String &_raw){
 //--------------------------------------------------------------------------------
 bool Command::parseSpecial(String &_raw){
   String specialCmd =_raw.substring(0,_raw.indexOf('}'));
+  Serial.println(specialCmd);
   if(specialCmd.equals("home")){
     mSpecialType = espHome;
     return true;
-  } else if(specialCmd.equals("initPos")){
-    mSpecialType = espInitPos;
+  } else if(specialCmd.equals("initpos")){
+    mSpecialType = espInitActionPos;
     return true;
-  } else {
+  } else if(specialCmd.equals("extendvertical")){
+    mSpecialType = espExtendVertical;
+    return true;
+  } {
     mType = cmdError;
     return false;
   }

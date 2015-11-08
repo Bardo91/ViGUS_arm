@@ -42,9 +42,9 @@ public:   // Public interface
   void extendVertical();
   
 private:  // Private methods
-  void angleCmd(const Command &_cmd);
-  void globalCmd(const Command &_cmd);
-  void specialCmd(const Command &_cmd);
+  void angleCmd(Command _cmd);
+  void globalCmd(Command _cmd);
+  void specialCmd(Command _cmd);
 private:  // Members
   Servo mBaseRot;
   Servo mExtender0, mExtender1, mExtender2, mExtender3;

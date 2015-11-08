@@ -13,7 +13,7 @@
 class Command{
 public:   // Public Interface
   enum eType {cmdAngles, cmdGlobal, cmdSpecial, cmdError};
-  enum eSpecialType {espHome, espInitPos};
+  enum eSpecialType {espHome, espInitActionPos, espExtendVertical};
 
   Command();
   Command(String _rawCommand);

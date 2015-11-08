@@ -68,6 +68,7 @@ void Arm::command(Command &_cmd){
     case Command::cmdGlobal:
       break;
     case Command::cmdSpecial:
+      specialCmd(_cmd);
       break;
     default:
       break;
@@ -110,7 +111,7 @@ void Arm::extendVertical(){
 // Private methods
 //--------------------------------------------------------------------------------
 
-void Arm::angleCmd(const Command &_cmd){
+void Arm::angleCmd(Command _cmd){
   const int * thetas = _cmd.angles();
   mThetaTarget0 = thetas[0];
   mThetaTarget1 = thetas[1];
@@ -122,12 +123,23 @@ void Arm::angleCmd(const Command &_cmd){
 }
 
 //--------------------------------------------------------------------------------
-void Arm::globalCmd(const Command &_cmd){
+void Arm::globalCmd(Command _cmd){
   
 }
 
 //--------------------------------------------------------------------------------
-void Arm::specialCmd(const Command &_cmd){
-  
+void Arm::specialCmd(Command _cmd){
+  Command::eSpecialType espType = _cmd.specialType();
+  switch(espType){
+    case Command::espHome:
+      home();
+      break;
+    case Command::espInitActionPos:
+      initialActionPose();
+      break;
+    case Command::espExtendVertical:
+      extendVertical();
+      break;
+  }
 }
 
