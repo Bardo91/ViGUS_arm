@@ -19,16 +19,13 @@ Command::Command(String _rawCommand){
 
 //--------------------------------------------------------------------------------
 bool Command::parse(String _raw){
-  Serial.println("Parsing");
   if(_raw[0] != '{')
     return false;
-  Serial.println(_raw);
   _raw.toLowerCase();
   _raw = _raw.substring(1);  // Remove initial '{'
   eType type = parseType(_raw);
   switch(type){
     case cmdAngles:
-      Serial.println("Type angles");
       return parseAngles(_raw);
       break;
     case cmdGlobal:
@@ -98,10 +95,8 @@ Command::eType Command::parseType(String &_raw){
 //--------------------------------------------------------------------------------
 bool Command::parseAngles(String &_raw){
   int nextComa;
-  Serial.println("Parsing angles");
   while((nextComa =_raw.indexOf(',')) != -1){
     String pair = _raw.substring(0, nextComa);
-    Serial.println(pair);
     String key = pair.substring(0,pair.indexOf(':'));
     String value = pair.substring(pair.indexOf(':')+1);
     _raw = _raw.substring(nextComa+1);
@@ -137,7 +132,6 @@ bool Command::parseGlobal(String &_raw){
 //--------------------------------------------------------------------------------
 bool Command::parseSpecial(String &_raw){
   String specialCmd =_raw.substring(0,_raw.indexOf('}'));
-  Serial.println(specialCmd);
   if(specialCmd.equals("home")){
     mSpecialType = espHome;
     return true;
