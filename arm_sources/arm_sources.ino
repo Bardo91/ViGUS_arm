@@ -17,7 +17,7 @@ void setup() {
 
 Command lastCmd;
 void loop() {
-  if(Serial.available()){
+  /*if(Serial.available()){
     String serialBuffer;
     Serial.println("Data available");
     serialBuffer = Serial.readStringUntil('\n');
@@ -27,8 +27,12 @@ void loop() {
       arm.command(lastCmd);
     }
   }
-  arm.spin();
-  delay(10);
+  arm.spin();*/
+  Matrix<float> m;
+  arm.jacobi(m, 0,0,0,0);
+  m.show();
+  m.pinv().show();
+  delay(10000);
 }
 
  

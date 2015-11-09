@@ -1,22 +1,21 @@
+clear all, close all, clc;
+
 %% Parameters
-a1 = 83;
-a2 = 177;
-a3 = 75;
-a4 = 40;
+a1 = 177;
+a2 = 95;
 
 t10 = 0;%60/180*pi;
 t20 = 0;%-120/180*pi;
 t30 = 0;%150/180*pi;
 t40 = 0;%-120/180*pi;
 
-offsets = [t10,t20,t30, t40];
+offsets = [t10,t20];
 
 display('Calculus of forwards kinematics');
+
 %% Variables
 t1 = sym('t1', 'real');
 t2 = sym('t2', 'real');
-t3 = sym('t3', 'real');
-t4 = sym('t4', 'real');
 %% tranformation 1
 R1 = [  cos(t1), -sin(t1), 0, 0; ...
         sin(t1), cos(t1), 0, 0;...
@@ -36,35 +35,24 @@ D2 = [1,0,0,a2;0,1,0,0;0,0,1,0;0,0,0,1];
 T2 = R2*D2;
 
 
-%% tranformation 3
-R3 = [  cos(t3), -sin(t3), 0, 0; ...
-        sin(t3), cos(t3), 0, 0;...
-        0, 0, 1, 0; ...
-        0, 0, 0, 1];
-D3 = [1,0,0,a3;0,1,0,0;0,0,1,0;0,0,0,1];
+T = T1*T2;
 
-T3 = R3*D3;
+addpath('rvctools');
+startup_rvc;
 
+L(1) = Link([0 0 a1 0 0]);
+L(1).offset = t10;
 
-%% tranformation 4
-R4 = [  cos(t4), -sin(t4), 0, 0; ...
-        sin(t4), cos(t4), 0, 0;...
-        0, 0, 1, 0; ...
-        0, 0, 0, 1];
-D4 = [1,0,0,a4;0,1,0,0;0,0,0,0;0,0,0,1];
+L(2) = Link([0 0 a2 0 0]);
+L(2).offset = t20;
 
-T4 = R4*D4;
+robot = SerialLink(L, 'name', 'Planar');
 
-T = T1*T2*T3*T4;
-%T = simplify(T);
+x = 100;
+y = 100;
 
-display('Solvin equations');
-syms x y;
-eqX = T(1,4) - x;
-eqY = T(2,4) - y;
-angle = atan(y/x);
-[st2, st3, st4] = solve([eqX, eqY, t1+t2+t3+t4 - angle, t1], [t2, t3, t4]);
-
+st2 = atan2(sqrt(1-(x^2+y^2-a1^2 -a2^2)/(2*a1*a2)),(x^2+y^2-a1^2 -a2^2)/(2*a1*a2));
+st1 = atan2(sqrt(1-(x*(a1+a2*cos(st2)+y*a2*sin(st2)))/(x^2+y^2)),(x*(a1+a2*cos(st2)+y*a2*sin(st2))));
 % display('Calculus of jacobi');
 % p = T(1:2,4);
 % vars = [t1,t2,t3,t4];

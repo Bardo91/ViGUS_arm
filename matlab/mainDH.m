@@ -16,6 +16,4 @@ L(4) = Link([0 0 a4 0 0]);
 L(4).offset = t40;
 
 robot = SerialLink(L, 'name', 'Planar');
-%robot.plot([0,0,0,0]);
-
-robot.fkine([0,0,0,0])
+robot.plot([0,0,0,0]);

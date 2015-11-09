@@ -10,6 +10,7 @@
 
 #include <Servo.h>
 #include "Command.h"
+#include "Matrix.h"
 
 class Arm{
 public:   // Public interface
@@ -33,10 +34,15 @@ public:   // Public interface
   /// Extend vertically the arm
   void extendVertical();
   
+  void jacobi(Matrix<float> &_j, float _t1, float _t2, float _t3, float _t4);
+  void pinvJacobi(Matrix<float> &_pinv, float _t1, float _t2, float _t3, float _t4);
+  
 private:  // Private methods
   void angleCmd(Command _cmd);
   void globalCmd(Command _cmd);
   void specialCmd(Command _cmd);
+
+  void inverseKinematics(float _x, float _y, float _z);
 private:  // Members
   Servo mBaseRot;
   Servo mExtender0, mExtender1, mExtender2, mExtender3;
